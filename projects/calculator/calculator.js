@@ -9,27 +9,31 @@ function runApp() {
   explainCalculatorApp();
   waitForAcknowledgement();
 
-  do    { runCalculator() } 
+  do    {runCalculator()}
   while (doAnotherCalculation());
 
   clearConsole();
   farewellFromCalculator();
 }
 
-function welcomeUserToCalculator() { 
-  report('welcome') 
+
+// --- user experience functions ---
+function welcomeUserToCalculator() {
+  report('welcome');
 } // side-effect (write stdout)
 
 function explainCalculatorApp() {} // side-effect (write stdout)
 
-function waitForAcknowledgement() { 
+function waitForAcknowledgement() {
   getInput("Hit 'enter' to continue.");
 } // side-effect (read stdin)
 
-function farewellFromCalculator() { 
-  report('farewell') 
+function farewellFromCalculator() {
+  report('farewell');
 } // side-effect (write stdout)
 
+
+// --- program logic functions ---
 function runCalculator() {
   clearConsole();
 
@@ -52,10 +56,8 @@ function runCalculator() {
   const operator = getValidInput(operatorMsg, validOperation);
 
   const output = performCalculation(operator, number1, number2);
-  clearConsole();
   reportCalculatorOutcome(output);
 } // side-effects (read stdin / write stdout)
-
 
 function performCalculation(operation, number1, number2) {
   let num1 = Number(number1);
@@ -89,7 +91,7 @@ function doAnotherCalculation() {
 
 
 // --- helpers ---
-function clearConsole() { 
+function clearConsole() {
   console.clear();
 } // side-effect (write stdout)
 
@@ -122,7 +124,7 @@ function validNonZeroNumber(userInput) {
 function validOperation(userInput) {
   const isValidSymbol = /^[1234]$/.test(userInput);
   const isValidString = /^(add|subtract|multiply|divide)$/i
-                        .test(userInput);
+    .test(userInput);
 
   return isValidSymbol || isValidString;
 } // returns a meaningful value
