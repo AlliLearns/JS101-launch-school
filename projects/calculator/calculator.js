@@ -19,7 +19,8 @@ function runApp() {
 
 // --- user experience functions ---
 function welcomeUserToCalculator() {
-  report('welcome');
+  report(`Welcome to CALCULATOR! Let's do some math.`);
+  report(`------------------------------------------`);
 } // side-effect (write stdout)
 
 function explainCalculatorApp() {} // side-effect (write stdout)
@@ -29,7 +30,8 @@ function waitForAcknowledgement() {
 } // side-effect (read stdin)
 
 function farewellFromCalculator() {
-  report('farewell');
+  report(`----------------------------------------`);
+  report(`Thank you for using CALCULATOR! Goodbye.`);
 } // side-effect (write stdout)
 
 
