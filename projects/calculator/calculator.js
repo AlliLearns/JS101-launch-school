@@ -21,18 +21,18 @@ function runApp() {
 function welcomeUserToCalculator() {
   report(`Welcome to CALCULATOR! Let's do some math.`);
   report(`------------------------------------------`);
-} // side-effect (write stdout)
+} 
 
-function explainCalculatorApp() {} // side-effect (write stdout)
+function explainCalculatorApp() {} // TODO
 
 function waitForAcknowledgement() {
   getInput("Hit 'enter' to continue.");
-} // side-effect (read stdin)
+} 
 
 function farewellFromCalculator() {
   report(`----------------------------------------`);
   report(`Thank you for using CALCULATOR! Goodbye.`);
-} // side-effect (write stdout)
+} 
 
 
 // --- program logic functions ---
@@ -59,7 +59,7 @@ function runCalculator() {
 
   const output = performCalculation(operator, number1, number2);
   reportCalculatorOutcome(output);
-} // side-effects (read stdin / write stdout)
+} 
 
 function performCalculation(operation, number1, number2) {
   let num1 = Number(number1);
@@ -75,11 +75,11 @@ function performCalculation(operation, number1, number2) {
     case 4:  return num1 / num2;
     default: return 'invalid operation';
   }
-} // returns a meaningful value
+} 
 
 function reportCalculatorOutcome(output) {
   console.log(`\n------ The result is ${output} ------\n`);
-} // side-effect (write stdout)
+} 
 
 function doAnotherCalculation() {
   const messages = {
@@ -89,39 +89,39 @@ function doAnotherCalculation() {
 
   const doAnother = getValidInput(messages, validGoAgain);
   return /\b(y|yes)\b/i.test(doAnother);
-} // return and (invokes return and side-effect (stdin))
+} 
 
 
 // --- helpers ---
 function clearConsole() {
   console.clear();
-} // side-effect (write stdout)
+} 
 
 function getInput(msg) {
   return rlsync.question(`${PROMPT} ${msg}`);
-} // side-effect (read stdin)
+} 
 
 function report(msg) {
   console.log(`${PROMPT} ${msg}`);
-} // side-effect (write stdout)
+} 
 
 function getValidInput(messages, validator) {
   let input = getInput(messages.prompt);
   while (!validator(input)) input = getInput(messages.failed);
 
   return input;
-} // return and side-effect (read stdin)
+} 
 
 function validNumber(userInput) {
   return /^[-.\d]+$/.test(userInput);
-} // returns a meaningful value
+} 
 
 function validNonZeroNumber(userInput) {
   const isValidNumber = validNumber(userInput);
   const isZero        = Number(userInput) === 0;
 
   return !isZero && isValidNumber;
-} // returns a meaningful value
+} 
 
 function validOperation(userInput) {
   const isValidSymbol = /^[1234]$/.test(userInput);
@@ -129,11 +129,11 @@ function validOperation(userInput) {
     .test(userInput);
 
   return isValidSymbol || isValidString;
-} // returns a meaningful value
+} 
 
 function validGoAgain(userInput) {
   return /\b(yes|no|y|n)\b/i.test(userInput);
-} // returns a meaningful value
+} 
 
 function handleDivByZero() {
   const divByZeroMsg = {
@@ -142,4 +142,4 @@ function handleDivByZero() {
   };
 
   return Number(getValidInput(divByZeroMsg, validNonZeroNumber));
-} // return and (invokes return and side-effect (stdin))
+} 
