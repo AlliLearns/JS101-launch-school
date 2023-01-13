@@ -1,0 +1,14 @@
+{
+  "welcome": "Welcome to CALCULATOR! Let's do some math.\n---------------------------------------------",
+  "enterToContinue": "Hit 'enter' to continue.",
+  "getNumber": "Please input any real number: ",
+  "invalidNumber": "That was not a valid number, try again: ",
+  "getOperation": "Please enter a valid operation:\n    1 for addition\n    2 for subtraction\n    3 for multiplication\n    4 for division\n",
+  "invalidOperation": "That was not a valid operation, please choose 1, 2, 3, or 4: ",
+  "noDivByZero": "Oh no! You're trying to divide by zero. Please provide a new number: ",
+  "giveNotZeroNum": "Sorry, we need a number that isn't zero for this division: ",
+  "doAnother": "Would you like to do another calculation? (Y/N): ",
+  "invalidContinuation": "Sorry, only accepting (Y)es or (N)o. Try again: ",
+  "anotherCalc": "Great! Let's do another calculation.",
+  "farewell": "Thank you for using CALCULATOR! Goodbye.\n-------------------------------------------\n"
+}
