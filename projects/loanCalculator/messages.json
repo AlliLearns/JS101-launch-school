@@ -3,6 +3,8 @@
   "invalidLoanAmount": "Loan amount must be a positive number with no symbols: ",
   "getAPR": "What is the percent interest rate (Ex: 2.5% is just 2.5): ",
   "invalidAPR": "Interest rates must be above 0, at or under 100 and contain no symbols: ",
+  "getLoanDuration": "What is the loan duration (in months): ",
+  "invalidLoanDuration": "Invalid loan duration: ",
   "doAnother": "Would you like to do another calculation? (Y/N): ",
   "invalidContinuation": "Sorry, only accepting (Y)es or (N)o. Try again: "
 }

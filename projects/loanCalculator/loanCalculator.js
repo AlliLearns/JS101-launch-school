@@ -6,6 +6,8 @@ const {
   invalidLoanAmount,
   getAPR,
   invalidAPR,
+  getLoanDuration,
+  invalidLoanDuration,
   doAnother,
   invalidContinuation,
 } = require('./messages.json');
@@ -44,9 +46,15 @@ function runLoanCalculator() {
     failed: invalidAPR,
   };
 
-  const loanAmount = getValidInput(loanMessages, validLoanAmount);
+  const durationMessages = {
+    prompt: getLoanDuration,
+    failed: invalidLoanDuration,
+  };
+
+  const loanAmount   = getValidInput(loanMessages, validLoanAmount);
   const interestRate = getValidInput(aprMessages, validInterestPercent);
-  console.log(loanAmount, interestRate);
+  const loanDuration = getValidInput(durationMessages, validLoanDuration);
+  console.log(loanAmount, interestRate, loanDuration);
 }
 
 function doAnotherCalculation() {
