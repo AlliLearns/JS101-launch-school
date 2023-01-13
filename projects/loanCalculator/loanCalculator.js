@@ -15,6 +15,7 @@ const {
 runApp();
 
 function runApp() {
+  clearConsole()
   welcomeToLoanCalculator();
   explainLoanCalculator();
   waitForAcknowledgement();
@@ -36,6 +37,8 @@ function farewellFromLoanCalculator() {}
 
 // --- program logic functions ---
 function runLoanCalculator() {
+  clearConsole();
+
   const loanMessages = {
     prompt: getLoanAmount,
     failed: invalidLoanAmount,
@@ -51,10 +54,22 @@ function runLoanCalculator() {
     failed: invalidLoanDuration,
   };
 
-  const loanAmount   = getValidInput(loanMessages, validLoanAmount);
-  const interestRate = getValidInput(aprMessages, validInterestPercent);
-  const loanDuration = getValidInput(durationMessages, validLoanDuration);
-  console.log(loanAmount, interestRate, loanDuration);
+  const loan     = getValidInput(loanMessages, validLoanAmount);
+  const apr      = getValidInput(aprMessages, validInterestPercent);
+  const duration = getValidInput(durationMessages, validLoanDuration);
+
+  const monthlyPayment = calculateMonthlyPayment(loan, apr, duration);
+  report(format(monthlyPayment));
+}
+
+function calculateMonthlyPayment(loan, interest, months) {
+  const annualInterestRate = interest / 100;
+  const monthlyInterestRate = annualInterestRate / 12;
+  // const months = duration * 12;
+  const denominator = (1 - Math.pow((1 + monthlyInterestRate), (-months)));
+
+  if (interest === 0) return loan / months;
+  else                return loan * (monthlyInterestRate / denominator );
 }
 
 function doAnotherCalculation() {
@@ -112,4 +127,13 @@ function validLoanDuration(userInput) {
 
 function validGoAgain(userInput) {
   return /\b(yes|no|y|n)\b/i.test(userInput);
+}
+
+function format(monthlyPayment) {
+  monthlyPayment = monthlyPayment.toLocaleString('en', {
+    style: 'currency',
+    currency: 'USD',
+  });
+
+  return `You'll owe ${monthlyPayment} per month.`;
 }
