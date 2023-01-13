@@ -1,0 +1,4 @@
+{
+  "doAnother": "Would you like to do another calculation? (Y/N): ",
+  "invalidContinuation": "Sorry, only accepting (Y)es or (N)o. Try again: "
+}
