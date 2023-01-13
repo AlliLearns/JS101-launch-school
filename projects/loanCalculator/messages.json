@@ -1,4 +1,6 @@
 {
+  "getLoanAmount": "What is the loan amount (ex: 1000.34): ",
+  "invalidLoanAmount": "Loan amount must be a positive number with no symbols: ",
   "doAnother": "Would you like to do another calculation? (Y/N): ",
   "invalidContinuation": "Sorry, only accepting (Y)es or (N)o. Try again: "
 }

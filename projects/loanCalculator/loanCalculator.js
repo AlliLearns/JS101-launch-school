@@ -2,6 +2,8 @@ const rlsync = require('readline-sync');
 const PROMPT = `>>>`;
 
 const {
+  getLoanAmount,
+  invalidLoanAmount,
   doAnother,
   invalidContinuation,
 } = require('./messages.json');
@@ -29,7 +31,15 @@ function farewellFromLoanCalculator() {}
 
 
 // --- program logic functions ---
-function runLoanCalculator() {}
+function runLoanCalculator() {
+  const loanMessages = {
+    prompt: getLoanAmount,
+    failed: invalidLoanAmount,
+  };
+
+  const loanAmount = getValidInput(loanMessages, validLoanAmount);
+  console.log(loanAmount);
+}
 
 function doAnotherCalculation() {
   const messages = {
@@ -60,6 +70,13 @@ function getValidInput(messages, validator) {
   while (!validator(input)) input = getInput(messages.failed);
 
   return input;
+}
+
+function validLoanAmount(userInput) {
+  const isZero     = /^0$/.test(userInput);
+  const isPositive = /^[.\d]+$/.test(userInput);
+
+  return !isZero && isPositive;
 }
 
 function validGoAgain(userInput) {
