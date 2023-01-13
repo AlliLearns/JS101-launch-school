@@ -1,6 +1,8 @@
 {
   "getLoanAmount": "What is the loan amount (ex: 1000.34): ",
   "invalidLoanAmount": "Loan amount must be a positive number with no symbols: ",
+  "getAPR": "What is the percent interest rate (Ex: 2.5% is just 2.5): ",
+  "invalidAPR": "Interest rates must be above 0, at or under 100 and contain no symbols: ",
   "doAnother": "Would you like to do another calculation? (Y/N): ",
   "invalidContinuation": "Sorry, only accepting (Y)es or (N)o. Try again: "
 }

@@ -4,6 +4,8 @@ const PROMPT = `>>>`;
 const {
   getLoanAmount,
   invalidLoanAmount,
+  getAPR,
+  invalidAPR,
   doAnother,
   invalidContinuation,
 } = require('./messages.json');
@@ -16,9 +18,9 @@ function runApp() {
   waitForAcknowledgement();
 
   do    { runLoanCalculator() }
-  while (doAnotherCalculation())
+  while (doAnotherCalculation());
 
-  // clearConsole();
+  clearConsole();
   farewellFromLoanCalculator();
 }
 
@@ -37,8 +39,14 @@ function runLoanCalculator() {
     failed: invalidLoanAmount,
   };
 
+  const aprMessages = {
+    prompt: getAPR,
+    failed: invalidAPR,
+  };
+
   const loanAmount = getValidInput(loanMessages, validLoanAmount);
-  console.log(loanAmount);
+  const interestRate = getValidInput(aprMessages, validInterestPercent);
+  console.log(loanAmount, interestRate);
 }
 
 function doAnotherCalculation() {
@@ -73,6 +81,21 @@ function getValidInput(messages, validator) {
 }
 
 function validLoanAmount(userInput) {
+  const isZero     = /^0$/.test(userInput);
+  const isPositive = /^[.\d]+$/.test(userInput);
+
+  return !isZero && isPositive;
+}
+
+function validInterestPercent(userInput) {
+  const isZero     = /^0$/.test(userInput);
+  const isPositive = /^[.\d]+$/.test(userInput);
+  const isInRange  = Number(userInput) <= 100;
+
+  return isPositive && !isZero && isInRange;
+}
+
+function validLoanDuration(userInput) {
   const isZero     = /^0$/.test(userInput);
   const isPositive = /^[.\d]+$/.test(userInput);
 
