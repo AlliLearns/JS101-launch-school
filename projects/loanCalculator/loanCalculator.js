@@ -15,12 +15,12 @@ const {
 runApp();
 
 function runApp() {
-  clearConsole()
+  clearConsole();
   welcomeToLoanCalculator();
   explainLoanCalculator();
   waitForAcknowledgement();
 
-  do    { runLoanCalculator() }
+  do     runLoanCalculator();
   while (doAnotherCalculation());
 
   clearConsole();
