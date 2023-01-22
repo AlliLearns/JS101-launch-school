@@ -13,7 +13,7 @@ const {
   doAnother,
   invalidContinuation,
   farewell,
-} = require('./messages.json');
+} = require('./calc_messages.json');
 
 runApp();
 

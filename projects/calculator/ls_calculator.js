@@ -1,5 +1,5 @@
 const readline = require('readline-sync');
-const MESSAGES = require('./ls_messages.json');
+const MESSAGES = require('./ls_calc_messages.json');
 const LANGUAGE = 'es';
 
 function prompt(key) {
