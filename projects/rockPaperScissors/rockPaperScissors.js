@@ -53,7 +53,6 @@ const SHORT_FORM_CHOICES = ['r', 'p', 'sc', 'sp', 'l'];
 
 const VALID_OUTCOME = {tie: 0, player: 1, computer: 2};
 const ROUNDS_TO_WIN = 3;
-const WINNERS = { player: 'PLAYER', computer: 'COMPUTER' };
 
 runApp();
 
@@ -63,7 +62,7 @@ function runApp() {
   explainRPS();
   waitForAcknowledgement();
 
-  do     playRPSRound();
+  do     playBestOfFive();
   while (playAnotherGame());
 
   clearConsole();
@@ -75,22 +74,53 @@ function welcomeToRPS() {}
 function explainRPS() {}
 function farewellFromRPS() {}
 
-function playAnotherGame() {
-  const messages = {
-    prompt: `Would you like to play again? (yes/no): `,
-    failed: `Invalid input, please enter 'yes' or 'no': `,
+// --- support for bestOfFive ---
+function playBestOfFive() {
+  let scores = {
+    player: 0,
+    computer: 0,
   };
 
-  const another = getValidInput(messages, validGoAgain);
-  return /\b(y|yes)\b/i.test(another);
+  while (!grandWinnerFound(scores)) {
+    const winner = playRPSRound();
+    scores = updateGameScores(winner, scores);
+
+    reportCurrentScores(scores);
+    waitForAcknowledgement();
+  }
+
+  const grandWinner = getGrandWinner(scores);
+  reportGrandWinner(grandWinner);
 }
 
-// --- support for bestOfFive ---
-function playBestOfFive() {}
-function grandWinnerFound() {}
-function getGrandWinner() {}
-function reportGrandWinner() {}
-function updateGameScores() {}
+function grandWinnerFound(scores) {
+  return scores.player >= ROUNDS_TO_WIN || scores.computer >= ROUNDS_TO_WIN;
+}
+
+function getGrandWinner(scores) {
+  if (scores.player >= ROUNDS_TO_WIN)   return VALID_OUTCOME.player;
+  if (scores.computer >= ROUNDS_TO_WIN) return VALID_OUTCOME.computer;
+  
+  return "Invalid grand winner";
+}
+
+function reportGrandWinner(grandWinner) {
+  report(`Grand winner is: ${grandWinner}`);
+}
+
+function updateGameScores(winner, scores) {
+  const scoresCopy = { ...scores };
+
+  if (winner === VALID_OUTCOME.player)   scoresCopy.player += 1;
+  if (winner === VALID_OUTCOME.computer) scoresCopy.computer += 1;
+
+  return scoresCopy;
+}
+
+function reportCurrentScores(scores) {
+  report(`Player has won ${scores.player} games`);
+  report(`Computer has won ${scores.computer} games`);
+}
 
 // --- support for playRPSRound ---
 function playRPSRound() {
@@ -110,6 +140,8 @@ function playRPSRound() {
 
   reportMoveChoices(playerMove, compChoice);
   reportRoundWinner(winningMessage);
+
+  return roundOutcome;
 }
 
 function getComputerMove() {
@@ -154,6 +186,16 @@ function reportRoundWinner(winningMessage) {
   report(winningMessage);
 }
 
+// --- support for play again ---
+function playAnotherGame() {
+  const messages = {
+    prompt: `Would you like to play again? (yes/no): `,
+    failed: `Invalid input, please enter 'yes' or 'no': `,
+  };
+
+  const another = getValidInput(messages, validGoAgain);
+  return /\b(y|yes)\b/i.test(another);
+}
 
 // --- helpers ---
 function clearConsole() {
@@ -161,7 +203,7 @@ function clearConsole() {
 }
 
 function waitForAcknowledgement() {
-
+  rlsync.question(`Press 'enter' to continue`);
 }
 
 function getInput(msg) {
