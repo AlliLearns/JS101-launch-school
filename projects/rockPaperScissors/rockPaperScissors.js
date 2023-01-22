@@ -49,7 +49,9 @@ const SCISSORS = 'scissors';
 const SPOCK = 'spock';
 const LIZARD = 'lizard';
 const PRINT_CHOICES = [ROCK, PAPER, SCISSORS, SPOCK, LIZARD];
+const SHORT_FORM_CHOICES = ['r', 'p', 'sc', 'sp', 'l'];
 
+const VALID_OUTCOME = {tie: 0, player: 1, computer: 2};
 const ROUNDS_TO_WIN = 3;
 const WINNERS = { player: 'PLAYER', computer: 'COMPUTER' };
 
@@ -90,8 +92,57 @@ function playRPSRound() {
     failed: `That is not a valid choice, try again: `,
   };
 
-  const playerMove = getValidInput(playerMoveMsg, isRPSOption);
-  console.log(playerMove);
+  const userInput  = getValidInput(playerMoveMsg, isRPSOption);
+  const playerMove = getFullMoveName(userInput);
+  const compChoice = getComputerMove();
+
+  const roundOutcome = determineOutcome(playerMove, compChoice);
+  const winningMessage = formatRoundWinner(roundOutcome);
+
+  reportMoveChoices(playerMove, compChoice);
+  reportRoundWinner(winningMessage);
+}
+
+function getComputerMove() {
+  const randomIndex = Math.trunc(Math.random() * PRINT_CHOICES.length);
+  return PRINT_CHOICES[randomIndex];
+}
+
+function reportMoveChoices(playerMove, computerMove) {
+  report(`Player move was ${playerMove}`);
+  report(`Computer move was ${computerMove}`);
+}
+
+function determineOutcome(player, computer) {
+  if (player === computer) return VALID_OUTCOME.tie;
+
+  const WINNING_COMBOS = {
+    [ROCK]:     [SCISSORS, LIZARD],
+    [PAPER]:    [ROCK, SPOCK],
+    [SCISSORS]: [PAPER, LIZARD],
+    [SPOCK]:    [SCISSORS, ROCK],
+    [LIZARD]:   [PAPER, SPOCK],
+  };
+
+  const playerWins = WINNING_COMBOS[player].includes(computer);
+  switch (playerWins) {
+    case true:  return VALID_OUTCOME.player;
+    case false: return VALID_OUTCOME.computer;
+    default: return -1;
+  }
+}
+
+function formatRoundWinner(winner) {
+  switch (winner) {
+    case VALID_OUTCOME.tie:      return `It's a tie!`;
+    case VALID_OUTCOME.player:   return `Congratulations, you win!`;
+    case VALID_OUTCOME.computer: return `Computer wins!`;
+    default: return `Invalid outcome: ${winner}`;
+  }
+}
+
+function reportRoundWinner(winningMessage) {
+  report(winningMessage);
 }
 
 
@@ -102,6 +153,23 @@ function clearConsole() {
 
 function waitForAcknowledgement() {
 
+}
+
+function getFullMoveName(userInput) {
+  const CODE_MAP = {
+    //TODO use SHORT_FORM_CHOICES array instead
+    [ROCK]: ['r'],
+    [PAPER]: ['p'],
+    [SCISSORS]: ['sc'],
+    [SPOCK]: ['sp'],
+    [LIZARD]: ['l'],
+  };
+  
+  for (let choice in CODE_MAP) {
+    if (CODE_MAP[choice].includes(userInput)) return choice;
+  }
+
+  return userInput.toLowerCase();
 }
 
 function getInput(msg) {
@@ -141,7 +209,7 @@ function playAnotherGame() {
 }
 
 function isRPSOption(userInput) {
-  const VALID_CHOICES = ['r', 'p', 'sc', 'sp', 'l'].concat(PRINT_CHOICES);
+  const VALID_CHOICES = SHORT_FORM_CHOICES.concat(PRINT_CHOICES);
 
   userInput = userInput.toLowerCase();
   const isEmpty = userInput.trim() === '';
