@@ -75,7 +75,16 @@ function welcomeToRPS() {}
 function explainRPS() {}
 function farewellFromRPS() {}
 
-// -- program logic functions --
+function playAnotherGame() {
+  const messages = {
+    prompt: `Would you like to play again? (yes/no): `,
+    failed: `Invalid input, please enter 'yes' or 'no': `,
+  };
+
+  const another = getValidInput(messages, validGoAgain);
+  return /\b(y|yes)\b/i.test(another);
+}
+
 // --- support for bestOfFive ---
 function playBestOfFive() {}
 function grandWinnerFound() {}
@@ -108,11 +117,6 @@ function getComputerMove() {
   return PRINT_CHOICES[randomIndex];
 }
 
-function reportMoveChoices(playerMove, computerMove) {
-  report(`Player move was ${playerMove}`);
-  report(`Computer move was ${computerMove}`);
-}
-
 function determineOutcome(player, computer) {
   if (player === computer) return VALID_OUTCOME.tie;
 
@@ -141,6 +145,11 @@ function formatRoundWinner(winner) {
   }
 }
 
+function reportMoveChoices(playerMove, computerMove) {
+  report(`Player move was ${playerMove}`);
+  report(`Computer move was ${computerMove}`);
+}
+
 function reportRoundWinner(winningMessage) {
   report(winningMessage);
 }
@@ -153,6 +162,46 @@ function clearConsole() {
 
 function waitForAcknowledgement() {
 
+}
+
+function getInput(msg) {
+  return rlsync.question(`${PROMPT} ${msg}`);
+}
+
+function report(msg) {
+  console.log(`${PROMPT} ${msg}`);
+}
+
+function joinOr(arr, delimiter = ', ', word = 'or') {
+  switch (arr.length) {
+    case 0: return '';
+    case 1: return `${arr[0]}`;
+    case 2: return arr.join(` ${word} `);
+    default:
+      return arr.slice(0, arr.length - 1).join(delimiter) +
+             ` ${word} ${arr[arr.length - 1]}`;
+  }
+}
+
+function getValidInput(messages, validator) {
+  let input = getInput(messages.prompt);
+  while (!validator(input)) input = getInput(messages.failed);
+
+  return input;
+}
+
+function isRPSOption(userInput) {
+  const VALID_CHOICES = SHORT_FORM_CHOICES.concat(PRINT_CHOICES);
+
+  userInput = userInput.toLowerCase();
+  const isEmpty = userInput.trim() === '';
+  const isRPS = VALID_CHOICES.includes(userInput);
+
+  return !isEmpty && isRPS;
+}
+
+function validGoAgain(userInput) {
+  return /\b(yes|no|y|n)\b/i.test(userInput);
 }
 
 function getFullMoveName(userInput) {
@@ -170,56 +219,6 @@ function getFullMoveName(userInput) {
   }
 
   return userInput.toLowerCase();
-}
-
-function getInput(msg) {
-  return rlsync.question(`${PROMPT} ${msg}`);
-}
-
-function joinOr(arr, delimiter = ', ', word = 'or') {
-  switch (arr.length) {
-    case 0: return '';
-    case 1: return `${arr[0]}`;
-    case 2: return arr.join(` ${word} `);
-    default:
-      return arr.slice(0, arr.length - 1).join(delimiter) +
-             ` ${word} ${arr[arr.length - 1]}`;
-  }
-}
-
-function report(msg) {
-  console.log(`${PROMPT} ${msg}`);
-}
-
-function getValidInput(messages, validator) {
-  let input = getInput(messages.prompt);
-  while (!validator(input)) input = getInput(messages.failed);
-
-  return input;
-}
-
-function playAnotherGame() {
-  const messages = {
-    prompt: `Would you like to play again? (yes/no): `,
-    failed: `Invalid input, please enter 'yes' or 'no': `,
-  };
-
-  const another = getValidInput(messages, validGoAgain);
-  return /\b(y|yes)\b/i.test(another);
-}
-
-function isRPSOption(userInput) {
-  const VALID_CHOICES = SHORT_FORM_CHOICES.concat(PRINT_CHOICES);
-
-  userInput = userInput.toLowerCase();
-  const isEmpty = userInput.trim() === '';
-  const isRPS = VALID_CHOICES.includes(userInput);
-
-  return !isEmpty && isRPS;
-}
-
-function validGoAgain(userInput) {
-  return /\b(yes|no|y|n)\b/i.test(userInput);
 }
 
 /*
