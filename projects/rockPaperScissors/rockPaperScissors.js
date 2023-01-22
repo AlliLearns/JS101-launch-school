@@ -42,6 +42,14 @@
 
 const rlsync = require('readline-sync');
 const PROMPT = `>>>`;
+
+const ROCK = 'rock';
+const PAPER = 'paper';
+const SCISSORS = 'scissors';
+const SPOCK = 'spock';
+const LIZARD = 'lizard';
+const PRINT_CHOICES = [ROCK, PAPER, SCISSORS, SPOCK, LIZARD];
+
 const ROUNDS_TO_WIN = 3;
 const WINNERS = { player: 'PLAYER', computer: 'COMPUTER' };
 
@@ -53,7 +61,7 @@ function runApp() {
   explainRPS();
   waitForAcknowledgement();
 
-  do     playBestOfFive();
+  do     playRPSRound();
   while (playAnotherGame());
 
   clearConsole();
@@ -74,7 +82,17 @@ function reportGrandWinner() {}
 function updateGameScores() {}
 
 // --- support for playRPSRound ---
-function playRPSRound() {}
+function playRPSRound() {
+  clearConsole();
+
+  const playerMoveMsg = {
+    prompt: `Choose one: ${joinOr(PRINT_CHOICES)}: `,
+    failed: `That is not a valid choice, try again: `,
+  };
+
+  const playerMove = getValidInput(playerMoveMsg, isRPSOption);
+  console.log(playerMove);
+}
 
 
 // --- helpers ---
@@ -90,6 +108,17 @@ function getInput(msg) {
   return rlsync.question(`${PROMPT} ${msg}`);
 }
 
+function joinOr(arr, delimiter = ', ', word = 'or') {
+  switch (arr.length) {
+    case 0: return '';
+    case 1: return `${arr[0]}`;
+    case 2: return arr.join(` ${word} `);
+    default:
+      return arr.slice(0, arr.length - 1).join(delimiter) +
+             ` ${word} ${arr[arr.length - 1]}`;
+  }
+}
+
 function report(msg) {
   console.log(`${PROMPT} ${msg}`);
 }
@@ -99,6 +128,30 @@ function getValidInput(messages, validator) {
   while (!validator(input)) input = getInput(messages.failed);
 
   return input;
+}
+
+function playAnotherGame() {
+  const messages = {
+    prompt: `Would you like to play again? (yes/no): `,
+    failed: `Invalid input, please enter 'yes' or 'no': `,
+  };
+
+  const another = getValidInput(messages, validGoAgain);
+  return /\b(y|yes)\b/i.test(another);
+}
+
+function isRPSOption(userInput) {
+  const VALID_CHOICES = ['r', 'p', 'sc', 'sp', 'l'].concat(PRINT_CHOICES);
+
+  userInput = userInput.toLowerCase();
+  const isEmpty = userInput.trim() === '';
+  const isRPS = VALID_CHOICES.includes(userInput);
+
+  return !isEmpty && isRPS;
+}
+
+function validGoAgain(userInput) {
+  return /\b(yes|no|y|n)\b/i.test(userInput);
 }
 
 /*
