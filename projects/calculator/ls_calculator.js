@@ -1,38 +1,49 @@
 const readline = require('readline-sync');
 const MESSAGES = require('./ls_messages.json');
+const LANGUAGE = 'es';
 
-function prompt(message) {
+function prompt(key) {
+  let message = messages(key, LANGUAGE);
   console.log(`=> ${message}`);
+}
+
+function messages(messageKey, lang='en') {
+  return MESSAGES[lang][messageKey];
 }
 
 function invalidNumber(number) {
   return number.trimStart() === '' || Number.isNaN(Number(number));
 }
 
-prompt(MESSAGES['welcome']);
+function printResult(result) {
+  let output = messages('resultIs', LANGUAGE);
+  console.log(`=> ${output} ${result}`);
+}
+
+prompt('welcome');
 
 while (true) {
-  prompt(MESSAGES['firstNumber']);
+  prompt('firstNumber');
   let number1 = readline.question();
   
   while (invalidNumber(number1)) {
-    prompt(MESSAGES['invalidNumber']);
+    prompt('invalidNumber');
     number1 = readline.question();
   }
   
-  prompt(MESSAGES['secondNumber']);
+  prompt('secondNumber');
   let number2 = readline.question();
   
   while (invalidNumber(number2)) {
-    prompt(MESSAGES['invalidNumber']);
+    prompt('invalidNumber');
     number2 = readline.question();
   }
   
-  prompt(MESSAGES['whatOperation']);
+  prompt('whatOperation');
   let operation = readline.question();
   
   while (!['1', '2', '3', '4'].includes(operation)) {
-    prompt(MESSAGES['invalidOperation']);
+    prompt('invalidOperation');
     operation = readline.question();
   }
   
@@ -52,9 +63,9 @@ while (true) {
       break;
   }
   
-  prompt(`The result is: ${output}`);
+  printResult(output);
 
-  prompt(MESSAGES['anotherCalculation']);
+  prompt('anotherCalculation');
   let answer = readline.question();
 
   if (answer[0].toLowerCase() !== 'y') break;
@@ -62,6 +73,8 @@ while (true) {
 
 
 // ----------------------------------------------------------------
+// Personal thoughts on the 'go-again' bonus feature....
+
 // function invalidYesOrNo(answer) {
 //   return !['yes', 'y', 'no', 'n'].includes(answer.toLowerCase());
 // }
