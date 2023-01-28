@@ -81,6 +81,13 @@ function playBestOfFive() {
     computer: 0,
   };
 
+  // TODO: get rid of the `scores` object. 
+  // const incrementPlayerScore   = makeScoreIncrementor();
+  // const incrementComputerScore = makeScoreIncrementor();
+
+  // let playerScore = 0;
+  // let computerScore = 0;
+
   while (!grandWinnerFound(scores)) {
     const winner = playRPSRound();
     scores = updateGameScores(winner, scores);
@@ -91,6 +98,14 @@ function playBestOfFive() {
 
   const grandWinner = getGrandWinner(scores);
   reportGrandWinner(grandWinner);
+}
+
+function makeScoreIncrementor() {
+  let score = 0;
+  return function increment() {
+    score++;
+    return score;
+  }
 }
 
 function grandWinnerFound(scores) {
@@ -262,9 +277,3 @@ function getFullMoveName(userInput) {
 
   return userInput.toLowerCase();
 }
-
-/*
-  helper function winnerFound(scores)
-    return scores.player   >= ROUNDS_TO_WIN || 
-           scores.computer >= ROUNDS_TO_WIN;
-*/
