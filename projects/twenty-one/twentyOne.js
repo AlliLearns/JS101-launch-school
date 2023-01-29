@@ -16,7 +16,25 @@ const DEALER_MINIMUM = 17;
 //   { suit: 'hearts', value: 'Jack' },
 // ];
 
-// console.log(getHandTotal(testHand));
+// const testWinningHand = [
+//   { suit: 'clubs', value: 'Ace' },
+//   { suit: 'clubs', value: 'Queen' },
+// ];
+
+// const testThresholdHand = [
+//   { suit: 'clubs', value: 3 },
+//   { suit: 'clubs', value: 7 },
+// ];
+
+// const testHands = {
+//   playerHand: [],
+//   dealerHand: testThresholdHand,
+// };
+
+// console.log(renderHandFor("dealer", testThresholdHand));
+// console.log(getHandTotal(testWinningHand));
+// console.log(dealerTurnLoop(makeNewShuffledDeck(), testHands));
+
 
 runApp();
 
@@ -54,7 +72,7 @@ function playTwentyOneRound() {
 
 
   const roundComplete = playerTurn(deck, hands);
-  if (!roundComplete)   dealerTurn(deck, dealerHand); 
+  if (!roundComplete)   dealerTurn(deck, hands); 
 
   // let winner = "";
   // if (bust(playerHand)) winner = 'Dealer';  
@@ -113,9 +131,11 @@ function drawCardsFrom(deck, numCards = 0, hand = []) {
   return hand;
 }
 
-
 function playerTurn(deck, hands) { 
-  letPlayerChoice(deck, hands);
+  report(`Player's turn!`);
+  addLineBreak();
+
+  playerTurnLoop(deck, hands);
 
   const playerBust = bustedHand(hands.playerHand);
   const playerWon  = winningHand(hands.playerHand);
@@ -123,15 +143,15 @@ function playerTurn(deck, hands) {
   return playerBust || playerWon;
 }
 
-function letPlayerChoice(deck, hands) {
+function playerTurnLoop(deck, hands) {
   // TODO; remove side-effects to `hands`
   while (true) {
     const playerHand = hands.playerHand;    
-    if (bustedHand(playerHand)) break;
+    if (bustedHand(playerHand)) return;
     
     reportHands(hands);
     const hit = askHitOrStay();
-    if   (!hit) break;
+    if   (!hit) return;
     else drawCardsFrom(deck, 1, playerHand);
   }
 }
@@ -146,35 +166,61 @@ function askHitOrStay() {
   return /\b(h|hit)\b/i.test(hit);
 }
 
-function dealerTurn(deck, hand) {}
+function dealerTurn(deck, hands) {
+  report(`Dealer's turn!`);
+  addLineBreak();
 
-function reportHands(hands, hidden = true) {
+  dealerTurnLoop(deck, hands);
+}
+
+function dealerTurnLoop(deck, hands) {
+  const dealerHand = hands.dealerHand;
+  const isHidden   = false;
+  reportHands(hands, isHidden);
+
+  while (dealerKeepDrawing(dealerHand)) {
+    drawCardsFrom(deck, 1, dealerHand);
+    reportDealerDraw();
+    waitForAcknowledgement();
+    reportHands(hands, isHidden);
+  }
+}
+
+function dealerKeepDrawing(dealerHand) {
+  return getHandTotal(dealerHand) < DEALER_MINIMUM;
+}
+
+function reportDealerDraw() {
+  report(`Dealer drew a card!`);
+}
+
+function reportHands(hands, isHidden = true) {
   const dealerHand = hands.dealerHand;
   const playerHand = hands.playerHand;
 
-  const dealerCardOne = renderCard(dealerHand[0]);
-  const dealerCardTwo = renderCard(dealerHand[1]);
-  const playerCardOne = renderCard(playerHand[0]);
-  const playerCardTwo = renderCard(playerHand[1]);
+  console.log(renderHandFor("Dealer", dealerHand, isHidden));
+  console.log(renderHandFor("Player", playerHand));
+}
 
-  let dealerHandMsg = "";
-  let playerHandMsg = "";
+function renderHandFor(participant, hand, hidden = false) {
+  const total = hidden ? null : getHandTotal(hand);
+  let message = `${PROMPT} ${participant} has: (${total ?? "Unknown total"})`;
 
-  if (hidden) {
-    dealerHandMsg = `Dealer has ${dealerCardOne} and an unknown card.`;
-  } else {
-    dealerHandMsg = `Dealer has ${dealerCardOne} and ${dealerCardTwo}`;
-  }
+  hand.forEach((card, idx) => {
+    if (idx === hand.length - 1 && hidden) {
+      message += `\n${PROMPT}   Unknown card`;
+    } else {
+      message += `\n${PROMPT}   ${renderCard(card)}`;
+    }
+  });
 
-  const playerTotal = getHandTotal(playerHand);
-  playerHandMsg = `Player has ${playerCardOne} and ${playerCardTwo}. (${playerTotal})`
-
-  report(dealerHandMsg);
-  report(playerHandMsg);
+  return message;
 }
 
 function renderCard(card) {
-  return `${card.value} of ${card.suit}`;
+  if (card) {
+    return `${card.value} of ${card.suit}`;
+  } else return "(no card to render)";
 }
 
 function bustedHand(hand) {
@@ -182,7 +228,7 @@ function bustedHand(hand) {
 }
 
 function winningHand(hand) {
-  return hand === BUST_THRESHOLD;
+  return getHandTotal(hand) === BUST_THRESHOLD;
 }
 
 function getHandTotal(hand) {
@@ -218,6 +264,10 @@ function playAnotherGame() {
 // --- helpers ---
 function clearConsole() {
   console.clear();
+}
+
+function addLineBreak() {
+  console.log();
 }
 
 function waitForAcknowledgement() {
