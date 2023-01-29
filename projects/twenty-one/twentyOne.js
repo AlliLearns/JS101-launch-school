@@ -7,6 +7,9 @@ const ACE_CARD    = ['Ace'];
 const BUST_THRESHOLD = 21;
 const DEALER_MINIMUM = 17;
 
+const VALID_OUTCOME = {tie: 0, player: 1, dealer: 2};
+
+
 // const testHand = [
 //   { suit: 'hearts', value: 3 },
 //   { suit: 'hearts', value: 'Ace' },
@@ -70,16 +73,9 @@ function playTwentyOneRound() {
     dealerHand: drawCardsFrom(deck, 2),
   };
 
-
   const roundComplete = playerTurn(deck, hands);
   if (!roundComplete)   dealerTurn(deck, hands); 
-
-  // let winner = "";
-  // if (bust(playerHand)) winner = 'Dealer';  
-  // if (bust(dealerHand)) winner = 'Player';
-  // winner = determineRoundOutcome(playerHand, dealerHand);
-
-  // reportRoundOutcome(winner);
+  finishRound(hands);
 
   // make deck
   // make hands
@@ -231,6 +227,41 @@ function winningHand(hand) {
   return getHandTotal(hand) === BUST_THRESHOLD;
 }
 
+function finishRound(hands) {
+  const playerHand = hands.playerHand;
+  const dealerHand = hands.dealerHand;
+
+  let winner = "";
+  if (bustedHand(playerHand)) winner = VALID_OUTCOME.dealer;  
+  if (bustedHand(dealerHand)) winner = VALID_OUTCOME.player;
+  else winner = determineRoundOutcome(playerHand, dealerHand);
+
+  reportRoundOutcome(winner);
+}
+
+function determineRoundOutcome(playerHand, dealerHand) {
+  const playerTotal = getHandTotal(playerHand);
+  const dealerTotal = getHandTotal(dealerHand);
+
+  if (playerTotal > dealerTotal)   return VALID_OUTCOME.player;
+  if (playerTotal < dealerTotal)   return VALID_OUTCOME.dealer;
+  if (playerTotal === dealerTotal) return VALID_OUTCOME.tie;
+  else return "invalid outcome";
+}
+
+function reportRoundOutcome(outcome) {
+  report(renderRoundOutcome(outcome));
+}
+
+function renderRoundOutcome(outcome) {
+  switch (outcome) {
+    case VALID_OUTCOME.player: return `Player won this round!`;
+    case VALID_OUTCOME.dealer: return `Dealer won this round!`;
+    case VALID_OUTCOME.tie:    return `This round was a tie!`;
+    default:                   return `Invalid round outcome`;
+  }
+}
+
 function getHandTotal(hand) {
   const values = hand.map(card => card.value);
 
@@ -245,9 +276,6 @@ function getHandTotal(hand) {
 
   return total;
 }
-
-function determineRoundOutcome(playerHand, dealerHand) {}
-function reportRoundOutcome(outcome) {}
 
 
 // --- support for play again ---
